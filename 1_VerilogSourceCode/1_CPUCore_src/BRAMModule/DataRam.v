@@ -71,15 +71,30 @@ always @ (posedge clk)
         ram_cell[addrbl][31:24] <= dinb[31:24];
 
 endmodule
+<<<<<<< HEAD
+=======
+    input  clk,
+    input  [ 3:0] wea, web,
+    input  [31:2] addra, addrb,
+    input  [31:0] dina , dinb,
+    output reg [31:0] douta, doutb
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
 //功能说明
     //同步读写bram，a、b双口可读写，a口用于CPU访问dataRam，b口用于外接debug_module进行读写
     //写使能为4bit，支持byte write
 //输入
     //clk               输入时钟
+<<<<<<< HEAD
     //addra             a口读写地�?
     //dina              a口写输入数据
     //wea               a口写使能
     //addrb             b口读写地�?
+=======
+    //addra             a口读写地址
+    //dina              a口写输入数据
+    //wea               a口写使能
+    //addrb             b口读写地址
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
     //dinb              b口写输入数据
     //web               b口写使能
 //输出

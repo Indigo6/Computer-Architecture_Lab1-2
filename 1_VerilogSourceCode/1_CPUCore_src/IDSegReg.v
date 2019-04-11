@@ -78,5 +78,9 @@ endmodule
     //     .doutb  ( RD2        )
     // );
 //注意事项
+<<<<<<< HEAD
     //输入到DataRam的addra是字地址，一个字32bit
     //已实现
+=======
+    //输入到DataRam的addra是字地址，一个字32bit
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1

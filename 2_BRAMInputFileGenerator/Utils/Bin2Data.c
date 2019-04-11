@@ -51,6 +51,10 @@ int main(int argc, char* argv[])
 		bytesToHexstring(tmp+1,1,str+2,2);
 		bytesToHexstring(tmp+2,1,str+4,2);
 		bytesToHexstring(tmp+3,1,str+6,2);
+<<<<<<< HEAD
+=======
+		str[8] = 0;
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
 		fprintf(fp2,"%s\n",str);
 		//
 		fread(tmp+3,sizeof(char),1,fp1);

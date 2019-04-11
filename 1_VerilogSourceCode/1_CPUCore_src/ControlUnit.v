@@ -269,6 +269,7 @@ endmodule
 //输出
     // JalD==1          表示Jal指令到达ID译码阶段
     // JalrD==1         表示Jalr指令到达ID译码阶段
+<<<<<<< HEAD
     // RegWriteD        表示ID阶段的指令对应的 寄存器写入模�? ，所有模式定义在Parameters.v�?
     // MemToRegD==1     表示ID阶段的指令需要将data memory读取的�?�写入寄存器,
     // MemWriteD        �?4bit，采用独热码格式，对于data memory�?32bit字按byte进行写入,MemWriteD=0001表示只写入最�?1个byte，和xilinx bram的接口类�?
@@ -279,5 +280,17 @@ endmodule
     // AluSrc2D         表示Alu输入�?2的�?�择
     // AluSrc1D         表示Alu输入�?1的�?�择
     // ImmType          表示指令的立即数格式，所有类型定义在Parameters.v�?   
+=======
+    // RegWriteD        表示ID阶段的指令对应的 寄存器写入模式 ，所有模式定义在Parameters.v中
+    // MemToRegD==1     表示ID阶段的指令需要将data memory读取的值写入寄存器,
+    // MemWriteD        共4bit，采用独热码格式，对于data memory的32bit字按byte进行写入,MemWriteD=0001表示只写入最低1个byte，和xilinx bram的接口类似
+    // LoadNpcD==1      表示将NextPC输出到ResultM
+    // RegReadD[1]==1   表示A1对应的寄存器值被使用到了，RegReadD[0]==1表示A2对应的寄存器值被使用到了，用于forward的处理
+    // BranchTypeD      表示不同的分支类型，所有类型定义在Parameters.v中
+    // AluContrlD       表示不同的ALU计算功能，所有类型定义在Parameters.v中
+    // AluSrc2D         表示Alu输入源2的选择
+    // AluSrc1D         表示Alu输入源1的选择
+    // ImmType          表示指令的立即数格式，所有类型定义在Parameters.v中   
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
 //实验要求  
     //实现ControlUnit模块   

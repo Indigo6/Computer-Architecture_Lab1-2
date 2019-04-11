@@ -109,4 +109,7 @@ endmodule
     //输入到DataRam的addra是字地址，一个字32bit
     //请配合DataExt模块实现非字对齐字节load
     //请通过补全代码实现非字对齐store
+<<<<<<< HEAD
     //已实现
+=======
+>>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
