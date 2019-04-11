@@ -27,14 +27,23 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 
 5. JalD 优先级小于前两者是因为前两者执行更早，如下的意思
 
-   ```
+   ```asm
    ···
    beq a1,a2,1506  IF ID EX(BranchE) MEM WB
-   jal a3,1444		   IF ID(JalD) 	  EX  MEM WB
+   jal a3,1444        IF ID(JalD) 	  EX  MEM WB
    ···
    ```
 
 6. 代码如下
+    ```verilog
+    always@(*)
+    begin
+        if(BranchE==1)  PC_In <= BranchTarget;
+        else if(JalrE==1)   PC_In <= JalrTarget;
+        else if(JalD==1)    PC_In <= JalTarget;
+        else PC_In <= PCF +4;
+    end
+    ```
 
 ### IDSegReg（IF-ID)
 
@@ -44,7 +53,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 
 因此，InstructionRam InstructionRamInst() 传参部分，clk 不需要取反，addr 传入 A (其实即PCF)
 
-![instr_mem](./images/IDSegReg.jpg)
+![instr_mem](./images/IDSegReg.jpg)</b>
 
 ### ImmOperandUnit
 
@@ -52,7 +61,7 @@ imm表示指令中的立即数，比如imm[11:0]，表示一个12位的立即数
 
 ~~下图是各种指令格式扩展后的32位立即数。~~
 
-<font color=red>**修正: 仍参照开头的指令格式图，RVI32 麦克老狼的博客有误！**</font>
+**<font color=red>修正: 仍参照开头的指令格式图，RVI32 麦克老狼的博客有误！</font>**
 
 ```verilog
 always@(*)
@@ -77,46 +86,48 @@ end
 
 根据指令的实际功能进行实现，如下
 
-+ <font color=red>容易错的点：</font>
-  1. 
++ **<font color=red>容易错的点：</font>**
+  1. Operand 默认无符号
+  2. 算术右移要指明 Operand1 是 $signed 而类型， 而且运算符是 '>>>'
+  3. 移位运算的位数只需要取 Operand2 的低五位
 
-```verilog
-always@(*)
-    begin
-        case(AluContrl)
-            `ADD: AluOut <= Operand1 + Operand2;
-            `SUB: AluOut <= Operand1 - Operand2;
-            `XOR: AluOut <= Operand1 ^ Operand2;
-            `OR:  AluOut <= Operand1 | Operand2;
-            `AND: AluOut <= Operand1 & Operand2;
-            `SRL: AluOut <= (Operand1>>Operand2[4:0]);
-            `SLL: AluOut <= (Operand1<<Operand2[4:0]);
-            `SRA: AluOut <= ($signed(Operand1)>>>Operand2[4:0]);
-            `SLT: AluOut <= ($signed(Operand1) < $signed(Operand2)) ? 32'b1 : 32'b0;
-            `SLTU:AluOut <= (Operand1 < Operand2) ? 32'b1 : 32'b0;
-            `LUI: AluOut <= Operand2;//待补全!!!
-            default:AluOut<=32'hxxxxxxxx;
-        endcase
-```
+    ```verilog
+    always@(*)
+        begin
+            case(AluContrl)
+                `ADD: AluOut <= Operand1 + Operand2;
+                `SUB: AluOut <= Operand1 - Operand2;
+                `XOR: AluOut <= Operand1 ^ Operand2;
+                `OR:  AluOut <= Operand1 | Operand2;
+                `AND: AluOut <= Operand1 & Operand2;
+                `SRL: AluOut <= (Operand1>>Operand2[4:0]);
+                `SLL: AluOut <= (Operand1<<Operand2[4:0]);
+                `SRA: AluOut <= ($signed(Operand1)>>>Operand2[4:0]);
+                `SLT: AluOut <= ($signed(Operand1) < $signed(Operand2)) ? 32'b1 : 32'b0;
+                `SLTU:AluOut <= (Operand1 < Operand2) ? 32'b1 : 32'b0;
+                `LUI: AluOut <= Operand2;//待补全!!!
+                default:AluOut<=32'hxxxxxxxx;
+            endcase
+    ```
 
 ### BranchDecisionMaking
 
-根据不同的 BranchTypeE 来对 Operand1, Operand2 进行逻辑运算，从而判断是跳转 (即产生 BranchE 信号)，如下
+根据不同的 BranchTypeE 来对 Operand1, Operand2 进行逻辑运算，从而判断是跳转 (即产生 BranchE 信号)，如下（注意的地方仍然是有符号运算需要指明）
 
-```verilog
-always@(*)
-begin
-	case(BranchTypeE)
-        `NOBRANCH: BranchE<=1'b0;
-        `BEQ: BranchE<=(Operand1 == Operand2) ? 1'b1 : 1'b0;
-        `BNE: BranchE<=(Operand1 != Operand2) ? 1'b1 : 1'b0;
-        `BLT: BranchE<=($signed(Operand1) < $signed(Operand2)) ? 1'b1 : 1'b0;
-        `BLTU:BranchE<=(Operand1 < Operand2) ? 1'b1 : 1'b0;
-        `BGE: BranchE<=($signed(Operand1) >= $signed(Operand2)) ? 1'b1 : 1'b0;
-        `BGEU: BranchE<=(Operand1 >= Operand2) ? 1'b1 : 1'b0;
-        default:BranchE<=1'b0;
-end
-```
+    ```verilog
+    always@(*)
+    begin
+        case(BranchTypeE)
+            `NOBRANCH: BranchE<=1'b0;
+            `BEQ: BranchE<=(Operand1 == Operand2) ? 1'b1 : 1'b0;
+            `BNE: BranchE<=(Operand1 != Operand2) ? 1'b1 : 1'b0;
+            `BLT: BranchE<=($signed(Operand1) < $signed(Operand2)) ? 1'b1 : 1'b0;
+            `BLTU:BranchE<=(Operand1 < Operand2) ? 1'b1 : 1'b0;
+            `BGE: BranchE<=($signed(Operand1) >= $signed(Operand2)) ? 1'b1 : 1'b0;
+            `BGEU: BranchE<=(Operand1 >= Operand2) ? 1'b1 : 1'b0;
+            default:BranchE<=1'b0;
+    end
+    ```
 
 ### WBSegReg
 
@@ -125,12 +136,13 @@ end
 与 IDSegReg 模块同理，clk 不需要取反。通过查看 RV32Core.v 的接口参数，可知
 
 1. wea 表示相应地址可以写入的字节序号, wea[i]=1 时, 则表示 32 位数据中 0~3 字节中第 i 个字节可以写入。但 WE(MemWrite) 独热码只能表示存储指令类型（存字/半字/字节)，需与 A(AluOut) 即计算所得的写目标地址结合。
+    + **<font color=red>修正：写入的数据 WD 也需要和根据地址 A 进行调整，因为 sb/sh 只把 WD 最低的 byte/half-word 存入相应位置，而不是相应的 b/h 存入相应位置（刚开始还理解错了）</font>**  
+    + 例如 WE = 4'b0011 (sh)， A = 32'b\*10，WD = 32'hef\*，则 wea=4'b1100，dina = 32'h\*ef。**总结可得，wea = WE<<A[1:0]，dina = WD<<(8*A[1:0])**。
 
-   例如 WE = 4'b0011 (sh)， A = 32'b*10，则 wea=4'b1100，**总结可得，wea = WE<<A[1:0]**。
+2. ~~addra 传入 `{A[32:2],{2'b00}}`，(即 AluOut 低两位清零，计算所得的写目标地址对齐后的地址)~~
+    **<font color=red>修正：addra 传入 A[31:2]</font>**
 
-2. addra 传入 `{A[32:2],{2'b00}}`，(即 AluOut 低两位清零，计算所得的写目标地址对齐后的地址)
-
-3. dina 传入 WD (即 StoreData，由 Forward 选择器在 AluOut, RegWriteData 和 RegOut2 中选择产生)
+3. ~~dina 传入 WD (即 StoreData，由 Forward 选择器在 AluOut, RegWriteData 和 RegOut2 中选择产生)~~
 
 ### DataExt
 
@@ -171,7 +183,7 @@ begin
 
 2. JalrD：只有 Jalr 指令为1
 
-3. RegWriteD：Branch/Store 指令为0，其它为 3‘d3，LB 3'd1, LH 3'd2, LW 3'd3, LBU 3'd4, LHU 3'd5
+3. RegWriteD：Branch/Store 指令为0，其它为 3'd3，LB 3'd1, LH 3'd2, LW 3'd3, LBU 3'd4, LHU 3'd5
 
 4. MemToRegD：只有 Load 指令为1
 
