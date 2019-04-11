@@ -108,7 +108,7 @@ module ControlUnit(
                 MemToRegD <= 1'b0;
                 MemWriteD <= 4'b0000;
                 LoadNpcD <= 1'b0;
-                RegReadD <= 2'b10;
+                RegReadD <= 2'b00;
                 BranchTypeD <= 3'b000;
                 AluContrlD <= `ADD;
                 AluSrc2D <= 2'b10;  //imm

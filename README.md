@@ -14,12 +14,18 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 + J-Type: JMP操作，JAL，~~JALR~~ 
 
 ## 易错点汇总
-1. JalR 为 I 型指令
-2. 不同类型指令的立即数扩展，RVI32 麦克老狼的博客有误
-3. Operand 默认无符号，算术右移要指明 Operand1 是 $signed 而类型， 而且运算符是 '>>>'，且移位运算的位数只需要取 Operand2 的低五位
-4. Store 语句写入的数据 WD 也需要和根据地址 A 进行调整，因为 sb/sh 只把 WD 最低的 byte/half-word 存入相应位置，而不是相应的 byte/half-word 存入相应位置（刚开始还理解错了）
-例如 WE = 4'b0011 (sh)， A = 32'b\*10，WD = 32'hef\*，则 wea=4'b1100，dina = 32'h\*ef。总结可得，wea = WE<<A[1:0]，dina = WD<<(8*A[1:0])。
-5. AluSrc2D：SLLI/SRLI/SRAI 指令为 2’b01，I(除前三者)\U\S 型指令 为 3'b10，其他类型指令为 2'b00
+1. JalR 为 I 型指令；
+2. 不同类型指令的立即数扩展，RVI32 麦克老狼的博客有误；
+3. Operand 默认无符号，算术右移要指明 Operand1 是 $signed 而类型， 而且运算符是 '>>>'，且移位运算的位数只需要取 Operand2 的低五位；
+4. Store 语句写入的数据 WD 也需要和根据地址 A 进行调整，因为 sb/sh 只把 WD 最低的 byte/half-word 存入相应位置，而不是相应的 byte/half-word 存入相应位置（刚开始还理解错了）。
+例如 WE = 4'b0011 (sh)， A = 32'b\*10，WD = 32'hef\*，则 wea=4'b1100，dina = 32'h\*ef。总结可得，wea = WE<<A[1:0]，dina = WD<<(8*A[1:0])；
+5. AluSrc2D：SLLI/SRLI/SRAI 指令为 2’b01，I(除前三者)\U\S 型指令 为 3'b10，其他类型指令为 2'b00；
+6. Jalr/Jal 要将 PC+4 写回 rd 寄存器，所以要有 LoadNpc 信号，**且 RegWrite 信号也是 `LW**；
+7. Branch 是在 Execute 阶段才确定，但是 BranchTarget 是在 Decode 阶段就由 JalNPC 算出来了，不是在 ALU 中算的。
+8. RegReadD：I 型指令为 2'b10, R/S/B 型指令为 2’b11, 其他指令为 2'b00（为什么我写代码的时候不相信自己 lab1 的设计 ··· 结果又想了一遍想了好久）
+9. 停等: 一条 load 指令，与紧跟其后的一条指令有写后读数据相关, 那么就要在他们插入气泡，停等一个周期, 再通过转发消除解决冲突。
+    + ~~具体做法就是,当 RegReadE[1] 或 RegReadE[0] 为1 且 RdM 与 Rs1E 或 Rs2E 相等时，清空 EX/MEM 寄存器段 (Stall=0, Flush=1)，并使 IF/ID 与 ID/EX 寄存器段保持不变 (Stall=1,Flush=0) 即可。~~
+    **修改：具体做法就是，当 MemToRegE 为 1 且 RdE 与 Rs1D 或 Rs2D 相等时，清空 EX/MEM 寄存器段 (StallE=0, FlushE=1)，并使 IF/ID 与 ID/EX 寄存器段保持不变 (StallD/F=1,FlushD/F=0) 即可。**
 
 ## 填空模块设计
 ### NPC_Generator
@@ -198,7 +204,7 @@ begin
 
 6. LoadNpcD：只有 Jal/Jalr 指令为1
 
-7. RegReadD：I 型指令为 2'b10, R/S/B 型指令为 2’b11, 其他指令为 2'b00
+7. **RegReadD：I 型指令为 2'b10, R/S/B 型指令为 2’b11, 其他指令为 2'b00**
 
 8. BranchTypeD：BEQ 3'd1, BNE 3'd2, BLT 3'd3, BLTU 3'd4, BGE 3'd5, BGEU 3'd6，其他指令为 3'd0
 
@@ -239,10 +245,11 @@ begin
    + RegReadE[1]==1, RegWriteM==1, 且Rs1E==RdM, 那么 Forward1E 置为 2'b10
    + RegReadE[1]==1, RegWriteW==1, 且Rs1E==RdW, 那么 Forward1E 置为 2'b01
 3. 分支跳转处理: 
-   + 检测到JalD: 清空 IF/ID 寄存器段内容, stallD置0, flushD置1。
-   + 检测到BranchE, JalrE: 清空 IF/ID、ID/EX寄存器段内容。
+   + 检测到JalD: 清空 IF/ID 寄存器段内容, StallD置0, FlushD置1。
+   + 检测到BranchE, JalrE: 清空 IF/ID、ID/EX寄存器段内容，FlushD/E=1。
 4. 停等: 一条 load 指令，与紧跟其后的一条指令有写后读数据相关, 那么就要在他们插入气泡，停等一个周期, 再通过转发消除解决冲突。
-   + 具体做法就是,当 RegReadE[1] 或 RegReadE[0] 为1 且 RdM 与 Rs1E 或 Rs2E 相等时，清空 EX/MEM 寄存器段 (Stall=0, Flush=1)，并使 IF/ID 与 ID/EX 寄存器段保持不变 (Stall=1,Flush=0) 即可。
+   + ~~具体做法就是,当 RegReadE[1] 或 RegReadE[0] 为1 且 RdM 与 Rs1E 或 Rs2E 相等时，清空 EX/MEM 寄存器段 (Stall=0, Flush=1)，并使 IF/ID 与 ID/EX 寄存器段保持不变 (Stall=1,Flush=0) 即可。~~
+    **修改：具体做法就是，当 MemToRegE 为 1 且 RdE 与 Rs1D 或 Rs2D 相等时，清空 EX/MEM 寄存器段 (StallE=0, FlushE=1)，并使 IF/ID 与 ID/EX 寄存器段保持不变 (StallD/F=1,FlushD/F=0) 即可。**
 
 ## 回答问题
 
