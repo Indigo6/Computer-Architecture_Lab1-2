@@ -7,7 +7,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 需要实现的指令分别有，类型通过指令格式/立即数生成方式不同而不同:
 
 + R-Type: 寄存器-寄存器操作，ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND
-+ I-Type: **<font color=red>加入JALR</font>**，短立即数操作和 load 操作，SLLI, SRLI, SRAI,（前三者**被编码为I类格式的特例**） ADDI, SLTI, SLTIU, XORI, ORI, ANDI, LB, LH, LW, LBU, LHU
++ I-Type: <font color=red>**加入JALR**</font>，短立即数操作和 load 操作，SLLI, SRLI, SRAI,（前三者**被编码为I类格式的特例**） ADDI, SLTI, SLTIU, XORI, ORI, ANDI, LB, LH, LW, LBU, LHU
 + S-Type: Store操作，SB, SH, SW
 + B-Type: Branch操作，BEQ, BNE, BLTU, BGE, BGEU
 + U-Type: 长立即数指令，LUI, AUIPC
