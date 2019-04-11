@@ -59,7 +59,7 @@ module WBSegReg(
         .clk    (clk),                      //请补全
         .wea    (WE<<A[1:0]),               //请补全
         .addra  (A[31:2]),                  //请补全, addra接口是 [31:2] 30位的
-        .dina   (WD),                       //请补全
+        .dina   (WD<<(8*A[1:0])),           //请补全
         .douta  ( RD_raw         ),
         .web    ( WE2            ),
         .addrb  ( A2[31:2]       ),

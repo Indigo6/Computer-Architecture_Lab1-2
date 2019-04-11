@@ -104,7 +104,7 @@ Disassembly of section .text:
    101a8:	00000213          	li	tp,0
    101ac:	00004097          	auipc	ra,0x4
    101b0:	9a508093          	addi	ra,ra,-1627 # 13b51 <tdat2>
-   101b4:	00108f03          	lb	t5,1(ra)
+   101b4:	00108f03          	lb	t5,1(ra)	#013c
    101b8:	000f0313          	mv	t1,t5
    101bc:	ff000e93          	li	t4,-16
    101c0:	01d30463          	beq	t1,t4,101c8 <test_247+0x24>
@@ -1622,24 +1622,24 @@ Disassembly of section .text:
    11588:	5700106f          	j	12af8 <fail>
 
 0001158c <test_371>:
-   1158c:	00002097          	auipc	ra,0x2
+   1158c:	00002097          	auipc	ra,0x2	#150c
    11590:	5c808093          	addi	ra,ra,1480 # 13b54 <sb_tdat>
    11594:	faa00113          	li	sp,-86
    11598:	00208023          	sb	sp,0(ra)
-   1159c:	00008f03          	lb	t5,0(ra)
+   1159c:	00008f03          	lb	t5,0(ra)	#ÔÚ1524´¦execute
    115a0:	faa00e93          	li	t4,-86
-   115a4:	17300193          	li	gp,371
+   115a4:	17300193          	li	gp,371	#1524
    115a8:	01df0463          	beq	t5,t4,115b0 <test_372>
    115ac:	54c0106f          	j	12af8 <fail>
 
 000115b0 <test_372>:
-   115b0:	00002097          	auipc	ra,0x2
+   115b0:	00002097          	auipc	ra,0x2	#1530
    115b4:	5a408093          	addi	ra,ra,1444 # 13b54 <sb_tdat>
    115b8:	00000113          	li	sp,0
    115bc:	002080a3          	sb	sp,1(ra)
    115c0:	00108f03          	lb	t5,1(ra)
    115c4:	00000e93          	li	t4,0
-   115c8:	17400193          	li	gp,372
+   115c8:	17400193          	li	gp,372	#1548
    115cc:	01df0463          	beq	t5,t4,115d4 <test_373>
    115d0:	5280106f          	j	12af8 <fail>
 
@@ -1651,13 +1651,13 @@ Disassembly of section .text:
    115e4:	00208123          	sb	sp,2(ra)
    115e8:	00209f03          	lh	t5,2(ra)
    115ec:	fffffeb7          	lui	t4,0xfffff
-   115f0:	fa0e8e93          	addi	t4,t4,-96 # ffffefa0 <__global_pointer$+0xfffeab58>
+   115f0:	fa0e8e93          	addi	t4,t4,-96 # ffffefa0 <__global_pointer$+0xfffeab58>	#1570
    115f4:	17500193          	li	gp,373
-   115f8:	01df0463          	beq	t5,t4,11600 <test_374>
-   115fc:	4fc0106f          	j	12af8 <fail>
+   115f8:	01df0463          	beq	t5,t4,11600 <test_374>	
+   115fc:	4fc0106f          	j	12af8 <fail>	#157c
 
 00011600 <test_374>:
-   11600:	00002097          	auipc	ra,0x2
+   11600:	00002097          	auipc	ra,0x2	#1580
    11604:	55408093          	addi	ra,ra,1364 # 13b54 <sb_tdat>
    11608:	00a00113          	li	sp,10
    1160c:	002081a3          	sb	sp,3(ra)

@@ -28,6 +28,7 @@ module DataExt(
                     2'b10: OUT<={{24{IN[23]}},IN[23:16]};
                     2'b01: OUT<={{24{IN[15]}},IN[15:8]};
                     2'b00: OUT<={{24{IN[7]}},IN[7:0]};
+                    default: OUT<=32'hxxxxxxxx;
                 endcase
             end
             `LH: 
@@ -35,23 +36,26 @@ module DataExt(
                 case(LoadedBytesSelect)
                     2'b10: OUT<={{16{IN[31]}},IN[31:16]};
                     2'b00: OUT<={{16{IN[15]}},IN[15:0]};
+                    default: OUT<=32'hxxxxxxxx;
                 endcase
             end
             `LW:  OUT<=IN;
             `LBU: 
             begin
                 case(LoadedBytesSelect)
-                    2'b11: OUT<={{24{1'b0}},IN[31:24]};
-                    2'b10: OUT<={{24{1'b0}},IN[23:16]};
-                    2'b01: OUT<={{24{1'b0}},IN[15:8]};
-                    2'b00: OUT<={{24{1'b0}},IN[7:0]};
+                    2'b11: OUT<={24'b0,IN[31:24]};
+                    2'b10: OUT<={24'b0,IN[23:16]};
+                    2'b01: OUT<={24'b0,IN[15:8]};
+                    2'b00: OUT<={24'b0,IN[7:0]};
+                    default: OUT<=32'hxxxxxxxx;
                 endcase
             end
             `LHU: 
             begin
                 case(LoadedBytesSelect)
-                    2'b10: OUT<={{16{1'b0}},IN[31:16]};
-                    2'b00: OUT<={{16{1'b0}},IN[15:0]};
+                    2'b10: OUT<={16'b0,IN[31:16]};
+                    2'b00: OUT<={16'b0,IN[15:0]};
+                    default: OUT<=32'hxxxxxxxx;
                 endcase
             end
             default: OUT<=32'hxxxxxxxx;

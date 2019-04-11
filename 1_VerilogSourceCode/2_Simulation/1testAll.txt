@@ -1204,7 +1204,7 @@ Disassembly of section .text:
    11008:	3400106f          	j	12348 <fail>
 
 0001100c <test_103>:
-   1100c:	00000013          	nop
+   1100c:	00000013          	nop //дкет!
    11010:	ffffe517          	auipc	a0,0xffffe
    11014:	8fc50513          	addi	a0,a0,-1796 # e90c <_start-0x1774>
    11018:	004005ef          	jal	a1,1101c <test_103+0x10>

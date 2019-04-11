@@ -14,14 +14,26 @@
 //				(they are all optional, you can run cpu without change paths here,if files are failed to open, we will not dump the content to .txt and will not try to initial your bram)
 //////////////////////////////////////////////////////////////////////////////////
 /*
-`define DataRamContentLoadPath "F:\\VivadoWorkspace\\RISCV-CPU\\RISCV-CPU.srcs\\sources_1\\new\\SimFiles\\1testAll.data"
-`define InstRamContentLoadPath "F:\\VivadoWorkspace\\RISCV-CPU\\RISCV-CPU.srcs\\sources_1\\new\\SimFiles\\1testAll.inst"
+`define DataRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\1testAll.data"
+`define InstRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\1testAll.inst"
 */
+
+/*
+`define DataRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\2testAll.data"
+`define InstRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\2testAll.inst"
+*/
+
+
+`define DataRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\3testAll.data"
+`define InstRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\3testAll.inst"
+
+/*`define DataRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\test.data"
+`define InstRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\test.inst"
+*/
+
 `define DataRamContentSavePath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\DataRamContent.txt"
 `define InstRamContentSavePath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\InstRamContent.txt"
 
-`define DataRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\test.data"
-`define InstRamContentLoadPath "E:\\Github\\ComputerArchitectureLab-master\\1_VerilogSourceCode\\2_Simulation\\test.inst"
 `define BRAMWORDS 4096  //a word is 32bit, so our bram is 4096*32bit
 
 module testBench(

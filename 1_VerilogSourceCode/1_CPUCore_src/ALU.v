@@ -25,9 +25,9 @@ module ALU(
             `XOR: AluOut <= Operand1 ^ Operand2;
             `OR:  AluOut <= Operand1 | Operand2;
             `AND: AluOut <= Operand1 & Operand2;
-            `SRL: AluOut <= (Operand1>>Operand2);
-            `SLL: AluOut <= (Operand1<<Operand2);
-            `SRA: AluOut <= ($signed(Operand1)>>>Operand2);
+            `SRL: AluOut <= (Operand1>>Operand2[4:0]);
+            `SLL: AluOut <= (Operand1<<Operand2[4:0]);
+            `SRA: AluOut <= ($signed(Operand1)>>>Operand2[4:0]);
             `SLT: AluOut <= ($signed(Operand1) < $signed(Operand2)) ? 32'b1 : 32'b0;
             `SLTU:AluOut <= (Operand1 < Operand2) ? 32'b1 : 32'b0;
             `LUI: AluOut <= Operand2;//待补全!!!
