@@ -43,8 +43,8 @@ module ControlUnit(
                 RegReadD <= 2'b00;
                 BranchTypeD <= 3'b000;
                 AluContrlD <= `ADD;
-                AluSrc2D <= 2'b10;  //imm
-                AluSrc1D <= 1'b1;   //pc
+                AluSrc2D <= 2'b00;  
+                AluSrc1D <= 1'b0;   
                 ImmType <= `JTYPE;
             end
             7'b1100111: //Jalr
