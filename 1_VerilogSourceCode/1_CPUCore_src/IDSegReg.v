@@ -34,7 +34,7 @@ module IDSegReg(
     wire [31:0] RD_raw;
     InstructionRam InstructionRamInst (
          .clk    ( clk),                     //请完善代码!!!
-         .addra  ( A),                       //请完善代码!!!
+         .addra  ( A[31:2]),                 //请完善代码!!!
          .douta  ( RD_raw     ),
          .web    ( |WE2       ),
          .addrb  ( A2[31:2]   ),
@@ -78,9 +78,5 @@ endmodule
     //     .doutb  ( RD2        )
     // );
 //注意事项
-<<<<<<< HEAD
     //输入到DataRam的addra是字地址，一个字32bit
     //已实现
-=======
-    //输入到DataRam的addra是字地址，一个字32bit
->>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1

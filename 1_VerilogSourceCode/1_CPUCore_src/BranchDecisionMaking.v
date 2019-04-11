@@ -1,10 +1,6 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-<<<<<<< HEAD
-// Company: USTC ESLAB(Embeded System Lab�?
-=======
 // Company: USTC ESLAB(Embeded System Lab）
->>>>>>> eb6a9bb3e09cf42ef8beb09a5c9ad229ca47bce1
 // Engineer: Haojun Xia
 // Create Date: 2019/03/14 12:03:15
 // Design Name: RISCV-Pipline CPU
