@@ -2,7 +2,7 @@
 
 RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位指令，所以指令在内存中必须4字节对齐，否则将触发异常。其中 rd 表示目的寄存器，rs1 是源操作数寄存器1，rs2 是源操作数寄存器2。
 
-![RISC-V](../../images/RISC-V.PNG)
+![RISC-V](../../tree/images/RISC-V.PNG)
 
 需要实现的指令分别有:
 
@@ -44,7 +44,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 
 因此，InstructionRam InstructionRamInst() 传参部分，clk 不需要取反，addr 传入 A (其实即PCF)
 
-![instr_mem](./images/Untitled Diagram.jpg)
+![instr_mem](../../tree/images/Untitled Diagram.jpg)
 
 ### ImmOperandUnit
 
