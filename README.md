@@ -2,7 +2,7 @@
 
 RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位指令，所以指令在内存中必须4字节对齐，否则将触发异常。其中 rd 表示目的寄存器，rs1 是源操作数寄存器1，rs2 是源操作数寄存器2。
 
-![RISC-V](RISC-V.PNG)
+![RISC-V](images\RISC-V.PNG)
 
 需要实现的指令分别有:
 
@@ -18,9 +18,23 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 ### NPC_Generator
 
 1. 默认PC_In = PCF + 4
+
 2. 当 BranchE 为 1 时, PC_In = PCF + BranchTarget
-3. 当 JalD 为 1 时, PC_In = PCF + JalTarget
-4. 当 JalrE 为 1 时, PC_In = JalrTarget
+
+3. 当 JalrE 为 1 时, PC_In = JalrTarget
+
+4. 当 JalD 为 1 时, PC_In = PCF + JalTarget 
+
+5. JalD 优先级小于前两者是因为前两者执行更早，如下的意思
+
+   ```
+   ···
+   beq a1,a2,1506  IF ID EX(BranchE) MEM WB
+   jal a3,1444		   IF ID(JalD) 	  EX  MEM WB
+   ···
+   ```
+
+6. 代码如下
 
 ### IDSegReg（IF-ID)
 
@@ -30,15 +44,15 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 
 因此，InstructionRam InstructionRamInst() 传参部分，clk 不需要取反，addr 传入 A (其实即PCF)
 
-![instr_mem](D:\Learn me\USTC\2019春季\2019春 体系结构\Lab\1\Untitled Diagram.jpg)
+![instr_mem](images\Untitled Diagram.jpg)
 
 ### ImmOperandUnit
 
 imm表示指令中的立即数，比如imm[11:0]，表示一个12位的立即数，它的高20位会符号位扩展，imm[31:12]表示一个32位的立即数，它的低12位会补0。
 
-下图是各种指令格式扩展后的32位立即数。
+~~下图是各种指令格式扩展后的32位立即数。~~
 
-![imm](imm.png)
+<font color=red>**修正: 仍参照开头的指令格式图，RVI32 麦克老狼的博客有误！**</font>
 
 ```verilog
 always@(*)
@@ -46,14 +60,16 @@ begin
     case(Type)
         `ITYPE: Out<={ {21{In[31]}}, In[30:20] };
         `STYPE: Out<={ {21{In[31]}}, In[30:25], In[11:7]};
-        `BTYPE: Out<={ {19{In[31]}}, 2{In[7]}, In[30:35], In[11:8], {1'b0} };
+        `BTYPE: Out<={ {20{In[31]}}, {In[7]}, In[30:25], In[11:8], {1'b0} };
         `UTYPE: Out<={ In[31:12], {12{1'b0}} };
-        `JTYPE: Out<={ {11{In[31]}}, In[19:12], In[20], In[30:21], {1'b0} };
-        `RTYPE: Out<=32'hxxxxxxxx;
+        `JTYPE: Out<={ {12{In[31]}}, In[19:12], In[20], In[30:21], {1'b0} };
+        `RTYPE: Out<=32'hxxxxxxxx;         
         default:Out<=32'hxxxxxxxx;
     endcase
 end
 ```
+
+
 
 ### ALU
 
@@ -61,12 +77,24 @@ end
 
 根据指令的实际功能进行实现，如下
 
++ <font color=red>容易错的点：</font>
+  1. 
+
 ```verilog
 always@(*)
     begin
         case(AluContrl)
-            `SLL: AluOut<= (Operand1<<Operand2[4:0])
-             ······
+            `ADD: AluOut <= Operand1 + Operand2;
+            `SUB: AluOut <= Operand1 - Operand2;
+            `XOR: AluOut <= Operand1 ^ Operand2;
+            `OR:  AluOut <= Operand1 | Operand2;
+            `AND: AluOut <= Operand1 & Operand2;
+            `SRL: AluOut <= (Operand1>>Operand2[4:0]);
+            `SLL: AluOut <= (Operand1<<Operand2[4:0]);
+            `SRA: AluOut <= ($signed(Operand1)>>>Operand2[4:0]);
+            `SLT: AluOut <= ($signed(Operand1) < $signed(Operand2)) ? 32'b1 : 32'b0;
+            `SLTU:AluOut <= (Operand1 < Operand2) ? 32'b1 : 32'b0;
+            `LUI: AluOut <= Operand2;//待补全!!!
             default:AluOut<=32'hxxxxxxxx;
         endcase
 ```
@@ -79,14 +107,14 @@ always@(*)
 always@(*)
 begin
 	case(BranchTypeE)
-        `NOBRANCH: BranchE<=1'b0
-        `BEQ: BranchE<=(Operand1 == Operand2) ? 1'b1 : 1'b0
-        `BNE: BranchE<=(Operand1 != Operand2) ? 1'b1 : 1'b0
-        `BLT: BranchE<=(Operand1 < Operand2) ? 1'b1 : 1'b0
-        `BLTU: BranchE<=($unsigned(Operand1) < $unsigned(Operand2)) ? 1'b1 : 1'b0
-        `BGE: BranchE<=(Operand1 >= Operand2) ? 1'b1 : 1'b0
-        `BGEU: BranchE<=($unsigned(Operand1) >= $unsigned(Operand2)) ? 1'b1 : 1'b0
-        default:BranchE<=1'b0
+        `NOBRANCH: BranchE<=1'b0;
+        `BEQ: BranchE<=(Operand1 == Operand2) ? 1'b1 : 1'b0;
+        `BNE: BranchE<=(Operand1 != Operand2) ? 1'b1 : 1'b0;
+        `BLT: BranchE<=($signed(Operand1) < $signed(Operand2)) ? 1'b1 : 1'b0;
+        `BLTU:BranchE<=(Operand1 < Operand2) ? 1'b1 : 1'b0;
+        `BGE: BranchE<=($signed(Operand1) >= $signed(Operand2)) ? 1'b1 : 1'b0;
+        `BGEU: BranchE<=(Operand1 >= Operand2) ? 1'b1 : 1'b0;
+        default:BranchE<=1'b0;
 end
 ```
 
