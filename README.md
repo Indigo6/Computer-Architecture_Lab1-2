@@ -44,7 +44,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 
 因此，InstructionRam InstructionRamInst() 传参部分，clk 不需要取反，addr 传入 A (其实即PCF)
 
-![instr_mem](.images/IDSegReg.jpg)
+![instr_mem](./images/IDSegReg.jpg)
 
 ### ImmOperandUnit
 
