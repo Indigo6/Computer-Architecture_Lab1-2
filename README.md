@@ -7,7 +7,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 需要实现的指令分别有，类型通过指令格式/立即数生成方式不同而不同:
 
 + R-Type: 寄存器-寄存器操作，ADD, SUB, SLL, SLT, SLTU, XOR, SRL, SRA, OR, AND
-+ I-Type: **<font color=red>加入JALR</font>**，短立即数操作和 load 操作，SLLI, SRLI, SRAI,（前三者**被编码为I类格式的特例**） ADDI, SLTI, SLTIU, XORI, ORI, ANDI, LB, LH, LW, LBU, LHU
++ I-Type: <font color=red>**加入JALR**</font>，短立即数操作和 load 操作，SLLI, SRLI, SRAI,（前三者**被编码为I类格式的特例**） ADDI, SLTI, SLTIU, XORI, ORI, ANDI, LB, LH, LW, LBU, LHU
 + S-Type: Store操作，SB, SH, SW
 + B-Type: Branch操作，BEQ, BNE, BLTU, BGE, BGEU
 + U-Type: 长立即数指令，LUI, AUIPC
@@ -17,7 +17,7 @@ RV32I 指令格式包括以下 6 种，每种指令格式都是固定的 32 位�
 1. JalR 为 I 型指令
 2. 不同类型指令的立即数扩展，RVI32 麦克老狼的博客有误
 3. Operand 默认无符号，算术右移要指明 Operand1 是 $signed 而类型， 而且运算符是 '>>>'，且移位运算的位数只需要取 Operand2 的低五位
-4. Store 语句写入的数据 WD 也需要和根据地址 A 进行调整，因为 sb/sh 只把 WD 最低的 byte/half-word 存入相应位置，而不是相应的 byte/half-word 存入相应位置（刚开始还理解错了）
+4. Store 语句写入的数据 WD 也需要和根据地址 A 进行调整，因为 sb/sh 只把 WD 最低的 byte/half-word 存入相应位置，而不是相应的 byte/half-word 存入相应位置（刚开始还理解错了）  
 例如 WE = 4'b0011 (sh)， A = 32'b\*10，WD = 32'hef\*，则 wea=4'b1100，dina = 32'h\*ef。总结可得，wea = WE<<A[1:0]，dina = WD<<(8*A[1:0])。
 5. AluSrc2D：SLLI/SRLI/SRAI 指令为 2’b01，I(除前三者)\U\S 型指令 为 3'b10，其他类型指令为 2'b00
 
